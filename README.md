@@ -32,28 +32,28 @@ All quiz data is dynamic and driven from the database, so you can add new quizze
 ## 📦 **Folder Structure**
 
 quiz-app/
-├── backend/ ← Flask backend
-│ ├── server.py ← Main Flask application
-│ ├── models/ ← Database models: Quiz, Question, User
+├── backend/
+│ ├── server.py 
+│ ├── models/ 
 │ │ ├── quiz.py
 │ │ ├── user.py
 │ │ └── ...
-│ ├── quiz.db ← SQLite database file
-│ ├── requirements.txt ← Python dependencies
-│ └── config/ ← (Optional) Config files if used
+│ ├── quiz.db 
+│ ├── requirements.txt 
+│ └── config/ 
 │ ├── config.py
 │ └── database.py
 │
-└── frontend/ ← React frontend
+└── frontend/ 
 ├── src/
-│ ├── App.js ← Main app component
-│ ├── Quiz.js ← Quiz list & quiz page component
-│ ├── App.css ← Custom styles
+│ ├── App.js
+│ ├── Quiz.js 
+│ ├── App.css 
 │ └── index.js
 ├── public/
 │ └── index.html
-├── package.json ← npm dependencies
-├── README.md ← Frontend README if separate
+├── package.json 
+├── README.md 
 └── ...
 
 ---
