@@ -9,8 +9,9 @@ function Quiz() {
   const [score, setScore] = useState(0);
 
   useEffect(() => {
-    axios.get('http://127.0.0.1:5000/api/quizzes')
+    axios.get('https://quiz-app-deq3.onrender.com/api/quizzes')
       .then(res => {
+        console.log(res.data);
         setQuizzes(res.data);
       })
       .catch(err => console.error(err));
