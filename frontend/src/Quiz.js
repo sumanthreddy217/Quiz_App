@@ -34,7 +34,7 @@ function Quiz() {
   if (!selectedQuiz) {
   return (
     <div className="container mt-4 ">
-      <h2 className="mb-4 text-center">Choose a Quiz</h2>
+      <h1 className="mb-4 text-center">Choose a Quiz</h1>
       <div className="row">
         {quizzes.map((qz) => (
           <div key={qz.id} className="col-md-4 mb-4">
@@ -66,7 +66,7 @@ function Quiz() {
   // Step 5: if user picked quiz → show its questions
   return (
     <div className="container mt-4">
-      <h2 className="mb-4 text-center">{selectedQuiz.title}</h2>
+      <h1 className="mb-4 text-center ">{selectedQuiz.title}</h1>
       {selectedQuiz.questions.map((q, idx) => (
         <div key={q.id} className="card mb-3 p-3">
           <p><strong>{idx + 1}. {q.question}</strong></p>
@@ -85,8 +85,8 @@ function Quiz() {
           ))}
         </div>
       ))}
-      {!submitted && <button className="btn btn-primary" onClick={handleSubmit}>Submit</button>}
-      {submitted && <p className="mt-3 alert alert-success">Your Score: {score} / {selectedQuiz.questions.length}</p>}
+      {!submitted && <button className="btn btn-primary mb-5" onClick={handleSubmit}>Submit</button>}
+      {submitted && <p className="mt-3 alert alert-success mb-3">Your Score: {score} / {selectedQuiz.questions.length}</p>}
     </div>
   );
 }
