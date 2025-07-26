@@ -30,7 +30,7 @@ All quiz data is dynamic and driven from the database, so you can add new quizze
 ---
 
 ## 📦 **Folder Structure**
-
+```
 quiz-app/
 ├── backend/
 │ ├── server.py 
@@ -55,7 +55,7 @@ quiz-app/
 ├── package.json 
 ├── README.md 
 └── ...
-
+```
 ---
 
 ## 🛠 **Languages & Frameworks Used**
