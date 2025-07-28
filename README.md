@@ -10,7 +10,7 @@ The app allows:
 ---
 
 ## 🚀 **Live Demo**
-👉 [**Click here to see the live quiz app**](https://your-frontend-link.vercel.app)
+👉 [**Click here to see the live quiz app**](https://quiz-app-in.netlify.app)
 
 ---
 
