@@ -1,21 +1,25 @@
 import React, { useEffect, useState } from 'react';
-import axios from 'axios';
 
-function Quiz() {
-  const [quizzes, setQuizzes] = useState([]);         // all quizzes
-  const [selectedQuiz, setSelectedQuiz] = useState(null); // chosen quiz
+function Quiz({ quiz, onBack }) {
   const [answers, setAnswers] = useState({});
   const [submitted, setSubmitted] = useState(false);
   const [score, setScore] = useState(0);
 
+  // save quiz id to localStorage
   useEffect(() => {
-    axios.get('https://quiz-app-deq3.onrender.com/api/quizzes')
-      .then(res => {
-        console.log(res.data);
-        setQuizzes(res.data);
-      })
-      .catch(err => console.error(err));
-  }, []);
+    if (quiz) {
+      localStorage.setItem('selectedQuizId', quiz.id);
+    }
+
+    // handle back button
+    const handleBack = (e) => {
+      e.preventDefault();
+      onBack(); // go back to quizzes list
+    };
+    window.history.pushState(null, '', window.location.href);
+    window.addEventListener('popstate', handleBack);
+    return () => window.removeEventListener('popstate', handleBack);
+  }, [quiz, onBack]);
 
   const handleChange = (qId, ansIdx) => {
     setAnswers({ ...answers, [qId]: ansIdx });
@@ -23,70 +27,52 @@ function Quiz() {
 
   const handleSubmit = () => {
     let s = 0;
-    selectedQuiz.questions.forEach(q => {
+    quiz.questions.forEach(q => {
       if (parseInt(answers[q.id]) === q.answer) s++;
     });
     setScore(s);
     setSubmitted(true);
+    localStorage.removeItem('selectedQuizId'); // remove after submit
   };
 
-  // Step 4: if user didn't pick quiz yet → show list of quizzes
-  if (!selectedQuiz) {
-  return (
-    <div className="container mt-4 ">
-      <h1 className="mb-4 text-center">Choose a Quiz</h1>
-      <div className="row">
-        {quizzes.map((qz) => (
-          <div key={qz.id} className="col-md-4 mb-4">
-            <div className="card h-100 shadow-sm">
-              <div className="card-body d-flex flex-column justify-content-between">
-                <h5 className="card-title text-center">{qz.title}</h5>
-                {/* optional: add description or number of questions */}
-                <p className="card-text text-center">
-                  Total Questions: {qz.questions.length}
-                </p>
-                <div className="d-grid">
-                  <button 
-                    className="btn btn-primary mt-auto"
-                    onClick={() => setSelectedQuiz(qz)}
-                  >
-                    Start Quiz
-                  </button>
-                </div>
-              </div>
-            </div>
-          </div>
-        ))}
-      </div>
-    </div>
-  );
-}
+  const allAnswered = quiz.questions.every(q => answers[q.id] !== undefined);
 
-
-  // Step 5: if user picked quiz → show its questions
   return (
     <div className="container mt-4">
-      <h1 className="mb-4 text-center ">{selectedQuiz.title}</h1>
-      {selectedQuiz.questions.map((q, idx) => (
+      <h2 className="mb-4 text-center">{quiz.title}</h2>
+      {quiz.questions.map((q, idx) => (
         <div key={q.id} className="card mb-3 p-3">
           <p><strong>{idx + 1}. {q.question}</strong></p>
-          {q.options.map((opt, i) => (
-            <div className="form-check" key={i}>
-              <input
-                className="form-check-input"
-                type="radio"
-                name={`q${q.id}`}
-                value={i}
-                onChange={() => handleChange(q.id, i)}
-                disabled={submitted}
-              />
-              <label className="form-check-label">{opt}</label>
-            </div>
-          ))}
+          {q.options.map((opt, i) => {
+            const isCorrect = submitted && i === q.answer;
+            return (
+              <div key={i} className={`form-check ${isCorrect ? 'bg-success text-white rounded' : ''}`}>
+                <input
+                  className="form-check-input"
+                  type="radio"
+                  name={`q${q.id}`}
+                  value={i}
+                  onChange={() => handleChange(q.id, i)}
+                  disabled={submitted}
+                />
+                <label className="form-check-label">{opt}</label>
+              </div>
+            );
+          })}
         </div>
       ))}
-      {!submitted && <button className="btn btn-primary mb-5" onClick={handleSubmit}>Submit</button>}
-      {submitted && <p className="mt-3 alert alert-success mb-3">Your Score: {score} / {selectedQuiz.questions.length}</p>}
+      {!submitted && (
+        <button
+          className="btn btn-primary mb-4"
+          onClick={handleSubmit}
+          disabled={!allAnswered}
+        >
+          Submit
+        </button>
+      )}
+      {submitted && (
+        <p className="alert alert-success">Your Score: {score} / {quiz.questions.length}</p>
+      )}
     </div>
   );
 }

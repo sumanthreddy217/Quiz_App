@@ -25,7 +25,14 @@ class OpenModelView(ModelView):
 
 class QuestionModelView(OpenModelView):
     form_overrides = dict(options=TextAreaField)
+    column_list = ['question', 'quiz', 'options', 'answer']
     form_columns = ['question', 'options', 'answer', 'quiz_id']
+    column_labels = dict(
+        question="Question Text",
+        options="Options (comma separated)",
+        answer="Correct Option Index",
+        quiz_id="Quiz ID"
+    )
 
     def on_model_change(self, form, model, is_created):
         raw = form.options.data
@@ -34,16 +41,21 @@ class QuestionModelView(OpenModelView):
         model.options = [x.strip().strip('"').strip("'") for x in raw.split(',')]
 
 # Admin setup
-admin = Admin(app, name='Quiz Admin Panel', template_mode='bootstrap3')
-admin.add_view(OpenModelView(Quiz, db.session))
-admin.add_view(QuestionModelView(Question, db.session))
+admin = Admin(app, name='📚 Admin Dashboard', template_mode='bootstrap4', base_template='admin/master.html')
+
+@app.context_processor
+def override_admin_css():
+    return dict(admin_css='/static/admin.css')
+
+admin.add_view(OpenModelView(Quiz, db.session, name='📝 Quizzes'))
+admin.add_view(QuestionModelView(Question, db.session, name='❓ Questions'))
 
 # Register blueprint
 app.register_blueprint(quiz_routes)
 
 @app.route('/')
 def index():
-    return "Quiz App Backend Running! (No login - Open admin panel)"
+    return "Quiz App Backend Running!"
 
 with app.app_context():
     db.create_all()
